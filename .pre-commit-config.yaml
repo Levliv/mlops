@@ -29,3 +29,11 @@ repos:
     rev: 6.0.0
     hooks:
     -   id: flake8
+
+  # Проверка типов (MyPy)
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.7.1
+  hooks:
+    - id: mypy
+      args: [--ignore-missing-imports]
+      additional_dependencies: ['types-requests']

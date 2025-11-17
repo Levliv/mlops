@@ -65,7 +65,6 @@ project to asses wine quality
 pip install cookiecutter-data-science
 ccds
 ```
-
 Создан подробный README.md, включающий:
 Описание проекта
 Структуру проекта
@@ -78,16 +77,16 @@ ccds
 Настроено форматирование кода (Black, isort, Ruff)
 Настроить линтеры (Ruff, MyPy, Bandit)
 Созданы конфигурационные файлы
-
+![pre-commit hooks](img/hw1/pre-commit-hooks.png)
 #### 3.Управление зависимостями:
 Настрено управлнеие зависимостями с Poetry
 Создан requirements.txt с точными версиями
 Настроено виртуальное окружение c Poetry
 Создан Dockerfile для контейнеризации
+
 #### 4.Git workflow :
 Настроием Git репозиторий
 Создан .gitignore для ML проекта
 Настроены ветки для разных этапов работы
 
 #### 5. Отчет о проделанной работе
-

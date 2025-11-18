@@ -56,6 +56,23 @@ project to asses wine quality
     │
     └── plots.py                <- Code to create visualizations
 ```
+--------
+## How to run
+1. Клонируйте репозиторий
+```
+git clone https://github.com/Levliv/mlops.git
+cd mlops/wine_quality
+```
+2. Соберите Docker образ
+```
+docker build -t wine-quality .
+```
+3. Запустите контейнер
+```
+docker run -p 8888:8888 wine-quality
+```
+Вы прекрасны: Откройте ссылку в браузере (будет выведена в терминале)
+
 
 --------
 ### Отчет о настройке рабочего места Data Scientist (ДЗ1)
@@ -67,15 +84,15 @@ ccds
 ```
 - Создан подробный README.md, включающий:
 - Описание проекта
-- Структуру проекта
-- Инструкции по установке
+- Структура проекта
+- Инструкция по установке
 - Руководство по использованию
 - Описание инструментов качества кода
 
 #### 2.Качество кода :
-- Настроены pre-commit hooks: Black, isort, Ruff, MyPy, Bandi
+- Настроены pre-commit hooks: Black, isort, Ruff, MyPy, Bandit
 - Настроено форматирование кода (Black, isort, Ruff)
-- Настроить линтеры (Ruff, MyPy, Bandit)
+- Настроены линтеры (Ruff, MyPy, Bandit)
 - Созданы конфигурационные файлы
 ![pre-commit hooks](img/hw1/pre_commit_hooks.png)
 
@@ -83,6 +100,7 @@ ccds
 - Настрено управлнеие зависимостями с Poetry
 - Создан requirements.txt с точными версиями
 - Настроено виртуальное окружение c Poetry
+![pre-commit hooks](img/hw1/poetry_env.png)
 - Создан Dockerfile для контейнеризации
 ![Docker](img/hw1/docker_run.png)
 

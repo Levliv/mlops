@@ -105,7 +105,7 @@ ccds
 ![Docker](img/hw1/docker_run.png)
 
 #### 4.Git workflow :
-- Настроием Git репозиторий
+- Настроиен Git репозиторий
 - Создан .gitignore для ML проекта
 - Настроены ветки для разных этапов работы
 
@@ -124,12 +124,11 @@ dvc init
 ```
 mkdir -p storage/local/dvc-storage
 dvc remote add -d local storage/local/dvc-storage
+dvc add .
+dvc push
 ```
 - Создана система версионирования данных
-- Структура проекта
-- Инструкция по установке
-- Руководство по использованию
-- Описание инструментов качества кода
+- Настроено автоматическое создание версий
 
 #### 2.Качество кода :
 - Настроены pre-commit hooks: Black, isort, Ruff, MyPy, Bandit

@@ -11,6 +11,8 @@ services:
     volumes:
       - .:/app
       - /app/__pycache__
+      - ./storage/local/dvc-storage:/app/storage/local/dvc-storage
     environment:
       - PYTHONUNBUFFERED=1
+      - DVC_REMOTE_LOCAL_URL=/app/storage/local/dvc-storage
     command: jupyter notebook --ip=0.0.0.0 --allow-root --no-browser

@@ -11,14 +11,23 @@ RUN apt-get update && apt-get install -y \
 # Установим рабочую папку
 WORKDIR /app
 
-# Копируем файлы зависимостей
-COPY requirements.txt .
-
-# Установим Python зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+# Зависимостей
+RUN pip install poetry
 
 # Копируем весь проект
 COPY . .
+
+COPY pyproject.toml poetry.lock ./
+
+# Установим Python зависимости
+RUN poetry config virtualenvs.create false && \
+    poetry install
+
+RUN git init && \
+    git config user.email "docker@example.com" && \
+    git config user.name "Docker"
+
+RUN dvc pull
 
 # Открытие порта для Jupyter
 EXPOSE 8888

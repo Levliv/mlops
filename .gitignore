@@ -181,6 +181,8 @@ storage/local/*
 !storage/local/.gitkeep
 storage/s3/*
 !storage/s3/.gitkeep
+!*.dvc
+!.dvc/
 # Note: .dvc/ directory and *.dvc files should be in Git
 
 # Experiments

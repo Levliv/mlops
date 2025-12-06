@@ -1,0 +1,5 @@
+outs:
+- md5: 1bf27115ca1b562b4af5aee84fe0e39d
+  size: 71826
+  hash: md5
+  path: wine_cleaned.csv

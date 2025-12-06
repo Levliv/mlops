@@ -6,6 +6,13 @@
 
 project to asses wine quality
 
+# Table of contents
+- [1. Project Organization](#Project-Organization)
+- [2. How to run](#How-to-run)
+- [3. Отчеты]
+  - [3.1 ДЗ1](#ДЗ1)
+  - [3.2 ДЗ2](#ДЗ2)
+- [4. Примеры](#примеры)
 ## Project Organization
 
 ```
@@ -75,7 +82,8 @@ docker run -p 8888:8888 wine-quality
 
 
 --------
-### Отчет о настройке рабочего места Data Scientist (ДЗ1)
+## ДЗ1
+### Отчет о настройке рабочего места Data Scientist
 #### 1. Структура проекта:
 Использован [Cookiecutter DS](https://cookiecutter-data-science.drivendata.org/)
 ```
@@ -113,7 +121,8 @@ ccds
 
 
 --------
-### Отчет о настройке dерсионирование данных и моделей (ДЗ2)
+## ДЗ2
+### Отчет о настройке dерсионирование данных и моделей
 #### 1. Настройка DVC для версионирования даных:
 - Установлен и инициализирован DVC
 ```

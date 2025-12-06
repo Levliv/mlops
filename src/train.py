@@ -1,3 +1,6 @@
+from datetime import datetime
+import json
+
 import joblib
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
@@ -13,7 +16,9 @@ y = df["quality"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Обучить модель
-model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+n_estimators = 100
+max_depth = 10
+model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
 model.fit(X_train, y_train)
 print("Модель обучена")
 
@@ -32,5 +37,17 @@ print(f"Метрики: {metrics}")
 
 # Сохранить модель
 joblib.dump(model, "models/model_v1.joblib")
+
+model_metadata = {
+    "model_name": "RandomForest",
+    "version": "1.0",
+    "metrics": metrics,
+    "hyperparameters": {"n_estimators": n_estimators, "max_depth": max_depth},
+    "training_samples": len(X_train),
+    "timestamp": datetime.now().isoformat(),
+}
+
+with open("models/model_v1_metadata.json", "w") as f:
+    json.dump(model_metadata, f, indent=2)
 
 print("Модель сохранена в models/model_v1.joblib")

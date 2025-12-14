@@ -183,6 +183,7 @@ storage/s3/*
 !storage/s3/.gitkeep
 !*.dvc
 !.dvc/
+!dvc.lock
 # Note: .dvc/ directory and *.dvc files should be in Git
 
 # Experiments

@@ -1,0 +1,90 @@
+schema: '2.0'
+stages:
+  prepare_data:
+    cmd: python src/dataset_processing.py
+    deps:
+    - path: data/raw/wineQT.csv
+      hash: md5
+      md5: e2e57e4c41e6ee0213fb12e5a70f4bfb
+      size: 78057
+    - path: src/dataset_processing.py
+      hash: md5
+      md5: 198b8418e8369df5dc0beb035ce8ab40
+      size: 1783
+    params:
+      params.yaml:
+        prepare:
+          input_file: data/raw/wineQT.csv
+          output_file: data/processed/wine_cleaned.csv
+    outs:
+    - path: data/processed/wine_cleaned.csv
+      hash: md5
+      md5: 780c5655b8df271669d98166685183af
+      size: 59583
+  train_model:
+    cmd: python src/modeling/train.py
+    deps:
+    - path: data/processed/wine_cleaned.csv
+      hash: md5
+      md5: 780c5655b8df271669d98166685183af
+      size: 59583
+    - path: src/modeling/train.py
+      hash: md5
+      md5: d3fe07e92f0afa6b7a64bdbe6db82f42
+      size: 6270
+    params:
+      params.yaml:
+        train:
+          model_type: RandomForest
+          n_estimators: 100
+          max_depth: 10
+          min_samples_split: 5
+          min_samples_leaf: 2
+          learning_rate: 0.1
+          random_state: 42
+          test_size: 0.2
+    outs:
+    - path: metrics/confusion_matrix.csv
+      hash: md5
+      md5: 1449730bb34691176a8768dc9d1077e5
+      size: 90
+    - path: metrics/train_metrics.json
+      hash: md5
+      md5: 847cc69f34c556bb2c9feb450c181c06
+      size: 220
+    - path: models/model.jbl
+      hash: md5
+      md5: f8448ca2e880b08c399fac17345a8d62
+      size: 2363977
+    - path: models/scaler.jbl
+      hash: md5
+      md5: 54353a6ac0e3925d4a84a5ea5c865ae8
+      size: 1279
+  evaluate_model:
+    cmd: python src/modeling/predict.py
+    deps:
+    - path: data/processed/wine_cleaned.csv
+      hash: md5
+      md5: 780c5655b8df271669d98166685183af
+      size: 59583
+    - path: models/model.jbl
+      hash: md5
+      md5: f8448ca2e880b08c399fac17345a8d62
+      size: 2363977
+    - path: models/scaler.jbl
+      hash: md5
+      md5: 54353a6ac0e3925d4a84a5ea5c865ae8
+      size: 1279
+    - path: src/modeling/predict.py
+      hash: md5
+      md5: cae6e360c98318198c34f681bd810faa
+      size: 4230
+    outs:
+    - path: metrics/eval_metrics.json
+      hash: md5
+      md5: 2c1ff532b7a158fb711df1ce3a7652b6
+      size: 158
+    - path: metrics/predictions.csv
+      hash: md5
+      md5: dea4d84a8f7210090deb5d5b2e7ce43b
+      size: 118205

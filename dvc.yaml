@@ -1,0 +1,39 @@
+stages:
+  prepare_data:
+    cmd: python src/dataset_processing.py
+    deps:
+      - data/raw/wineQT.csv
+      - src/dataset_processing.py
+    outs:
+      - data/processed/wine_cleaned.csv
+    params:
+      - prepare
+
+  train_model:
+    cmd: python src/modeling/train.py
+    deps:
+      - data/processed/wine_cleaned.csv
+      - src/modeling/train.py
+    params:
+      - train
+    outs:
+      - models/model.jbl
+      - models/scaler.jbl
+    metrics:
+      - metrics/train_metrics.json:
+          cache: false
+      - metrics/confusion_matrix.csv:
+          cache: false
+
+  evaluate_model:
+    cmd: python src/modeling/predict.py
+    deps:
+      - models/model.jbl
+      - models/scaler.jbl
+      - data/processed/wine_cleaned.csv
+      - src/modeling/predict.py
+    metrics:
+      - metrics/eval_metrics.json:
+          cache: false
+    outs:
+      - metrics/predictions.csv

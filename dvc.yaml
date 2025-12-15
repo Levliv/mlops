@@ -22,8 +22,6 @@ stages:
     metrics:
       - metrics/train_metrics.json:
           cache: false
-      - metrics/confusion_matrix.csv:
-          cache: false
 
   evaluate_model:
     cmd: python src/modeling/predict.py

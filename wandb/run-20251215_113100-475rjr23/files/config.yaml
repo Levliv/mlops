@@ -1,0 +1,64 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            o5x338appput9t1sy8ziatpofpp5u13i:
+                args:
+                    - --alpha=0.5259561302227579
+                    - --batch_size=64
+                    - --learning_rate=3.129519245985194e-05
+                codePath: src/modeling/train.py
+                codePathLocal: src/modeling/train.py
+                email: livshitz.leva@gmail.com
+                executable: /opt/anaconda3/bin/python
+                git:
+                    commit: c55222bf9ac87d1322d73abb655d7b093cba9f75
+                    remote: https://github.com/Levliv/mlops
+                host: Levs-MacBook-Air.local
+                os: macOS-15.6.1-arm64-arm-64bit
+                program: /Users/lev/Documents/ml_practices/wine_quality/src/modeling/train.py
+                python: CPython 3.12.2
+                root: /Users/lev/Documents/ml_practices/wine_quality
+                startedAt: "2025-12-15T08:31:00.873447Z"
+                writerId: o5x338appput9t1sy8ziatpofpp5u13i
+        m: []
+        python_version: 3.12.2
+        t:
+            "1":
+                - 5
+                - 53
+                - 105
+            "2":
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 14
+                - 15
+                - 16
+            "4": 3.12.2
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": darwin-arm64
+alpha:
+    value: 0.5259561302227579
+batch_size:
+    value: 64
+learning_rate:
+    value: 3.129519245985194e-05
+max_depth:
+    value: 5
+min_samples_leaf:
+    value: 2
+min_samples_split:
+    value: 5
+model_type:
+    value: RandomForest
+n_estimators:
+    value: 10
+random_state:
+    value: 42
+test_size:
+    value: 0.2

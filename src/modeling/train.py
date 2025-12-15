@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 from pathlib import Path
@@ -17,10 +18,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import yaml
 
-from src.utils.wandb import track_experiment
-
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root))
+
+from src.utils.wandb import track_experiment
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
@@ -29,6 +30,42 @@ logger = logging.getLogger(__name__)
 def load_params():
     with open("params.yaml") as f:
         return yaml.safe_load(f)
+
+
+def parse_args():
+    """Парсим аргументы из командной строки"""
+    parser = argparse.ArgumentParser(description="Train wine quality model")
+    parser.add_argument("--learning_rate", type=float, default=None)
+    parser.add_argument("--batch_size", type=int, default=None)
+    parser.add_argument("--alpha", type=float, default=None)
+    parser.add_argument("--n_estimators", type=int, default=None)
+    parser.add_argument("--max_depth", type=int, default=None)
+    parser.add_argument("--min_samples_split", type=int, default=None)
+    parser.add_argument("--min_samples_leaf", type=int, default=None)
+    parser.add_argument("--model_type", type=str, default=None)
+    return parser.parse_args()
+
+
+def merge_params(params, args):
+    """Объединяем параметры: аргументы командной строки переопределяют файл"""
+    if args.learning_rate is not None:
+        params["train"]["learning_rate"] = args.learning_rate
+    if args.batch_size is not None:
+        params["train"]["batch_size"] = args.batch_size
+    if args.alpha is not None:
+        params["train"]["alpha"] = args.alpha
+    if args.n_estimators is not None:
+        params["train"]["n_estimators"] = args.n_estimators
+    if args.max_depth is not None:
+        params["train"]["max_depth"] = args.max_depth
+    if args.min_samples_split is not None:
+        params["train"]["min_samples_split"] = args.min_samples_split
+    if args.min_samples_leaf is not None:
+        params["train"]["min_samples_leaf"] = args.min_samples_leaf
+    if args.model_type is not None:
+        params["train"]["model_type"] = args.model_type
+
+    return params
 
 
 def load_data():
@@ -186,7 +223,18 @@ def main():
     logger.info("Wine Quality Classification - Training")
     logger.info("=" * 70)
 
+    # Загружаем параметры из файла
     params = load_params()
+
+    # Парсим аргументы командной строки
+    args = parse_args()
+
+    # Объединяем: аргументы переопределяют файл
+    params = merge_params(params, args)
+
+    # Логируем какие параметры используем
+    logger.info(f"Parameters: {params['train']}")
+
     train_and_evaluate(params)
 
     logger.info("=" * 70)

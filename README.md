@@ -9,9 +9,10 @@ project to asses wine quality
 # Table of contents
 - [1. Project Organization](#Project-Organization)
 - [2. How to run](#How-to-run)
-- 3. Отчеты
+- [3. Отчеты]()
   - [3.1 ДЗ 1](#ДЗ1)
   - [3.2 ДЗ 2](#ДЗ2)
+  - [3.3 ДЗ 3](#ДЗ3)
 - [4. Примеры](#примеры)
 ## Project Organization
 
@@ -153,6 +154,42 @@ dvc push
 - Настроены версеии зависимостей: poetry
 - Протестировано решение
 - Создан Docker контейнер
+![Docker-compose](img/hw2/docker-compose.png)
+
+#### 4. Отчет о проделанной работе
+
+
+--------
+## ДЗ3
+### Отчет о настройке трекинга экспериментов
+#### 1. Настройка выбранного инструмента: Weights & Biases
+- Установлен и инициализирован Weights & Biases
+- Настроиено облачное хранилище
+- создан проект и эксперименты
+- Настроена аутентификация с API_KEY
+```
+poetry add wandb
+poetry install
+wandb login
+<enter API key recieved https://wandb.ai>
+```
+![dvc_data](img/hw2/dvc_data.png)
+
+#### 2. Проведение экспериментов:
+- Проведено 15+ экспериментов с разными алгоритмами sweepe
+  - создан файл sweep.yaml с сеткой гиперпараметров для оптимизации
+  - создана серия экспериментов ```wandb sweep sweep.yaml```
+  - Проведена серия экспериментов ```wandb agent livshitz-leva-itmo-university/wine-quality/7cn398y4 --count 15```
+- Настроено логирование метрик, параметров и артефактов
+- Создано система сравнения экспериментов
+- Настроена фильтрация и поиск экспериментов
+![dvc_models](img/hw2/dvc_model.png)
+
+#### 3.Интеграция с кодом:
+- Интегрирован выбранный инструмент в Python код
+- Созданы декораторы для автоматического логирования: ![декоратор](src/utils/wandb.py)
+- Настроены ![контекстные менеджеры](src/utils/wandb.py)
+- Cозданы ![утилиты для работы с экспериментами](src/utils/wandb.py)
 ![Docker-compose](img/hw2/docker-compose.png)
 
 #### 4. Отчет о проделанной работе

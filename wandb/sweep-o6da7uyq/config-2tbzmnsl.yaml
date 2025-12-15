@@ -1,0 +1,18 @@
+wandb_version: 1
+
+alpha:
+  value: 0.6603894236850522
+batch_size:
+  value: 64
+learning_rate:
+  value: 0.00024637231315202126
+max_depth:
+  value: 10
+min_samples_leaf:
+  value: 4
+min_samples_split:
+  value: 5
+model_type:
+  value: GradientBoosting
+n_estimators:
+  value: 50

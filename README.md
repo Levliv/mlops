@@ -148,6 +148,7 @@ dvc push
 - Создана система сравнения версий
 ![dvc_models](img/hw2/dvc_model.png)
 ![dvc_models_hash](img/hw2/dvc_lock.png)
+![dvc_pull](img/hw2/dvc_pull.png)
 
 #### 3.Воспроизводимость:
 - Инструкция по воспроизведению: добавлены в соответствующие пункты отчета

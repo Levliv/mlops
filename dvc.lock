@@ -44,10 +44,6 @@ stages:
           random_state: 42
           test_size: 0.2
     outs:
-    - path: metrics/confusion_matrix.csv
-      hash: md5
-      md5: 1449730bb34691176a8768dc9d1077e5
-      size: 90
     - path: metrics/train_metrics.json
       hash: md5
       md5: 847cc69f34c556bb2c9feb450c181c06

@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+import sys
 
 import joblib
 import pandas as pd
@@ -8,7 +9,6 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
-    confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
@@ -16,6 +16,11 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import yaml
+
+from src.utils.wandb import track_experiment
+
+project_root = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(project_root))
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
@@ -133,11 +138,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test):
     logger.info("Classification Report (Test Set):")
     logger.info(classification_report(y_test, y_test_pred))
 
-    cm = confusion_matrix(y_test, y_test_pred)
-    logger.info("Confusion Matrix (Test Set):")
-    logger.info(cm)
-
-    return metrics, y_test_pred, cm
+    return metrics, y_test_pred, y_test
 
 
 def save_model(model, filepath):
@@ -159,19 +160,9 @@ def save_metrics(metrics, filepath):
         json.dump(metrics, f, indent=4)
 
 
-def save_confusion_matrix(cm, filepath):
-    logger.info("Saving confusion matrix...")
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-    df_cm = pd.DataFrame(cm)
-    df_cm.to_csv(filepath, index=False)
-
-
-def main():
-    logger.info("=" * 70)
-    logger.info("Wine Quality Classification - Training")
-    logger.info("=" * 70)
-
-    params = load_params()
+@track_experiment(project="wine-quality", tags=["dvc-pipeline"])
+def train_and_evaluate(params):
+    """Обучение и оценка модели с логированием в W&B"""
     df = load_data()
     X, y = prepare_features(df)
     X_train, X_test, y_train, y_test = split_data(X, y, params)
@@ -180,13 +171,23 @@ def main():
     save_scaler(scaler, "models/scaler.jbl")
 
     model = train_model(X_train_scaled, y_train, params)
-    metrics, y_test_pred, cm = evaluate_model(
+    metrics, y_test_pred, y_test_result = evaluate_model(
         model, X_train_scaled, X_test_scaled, y_train, y_test
     )
 
     save_model(model, "models/model.jbl")
     save_metrics(metrics, "metrics/train_metrics.json")
-    save_confusion_matrix(cm, "metrics/confusion_matrix.csv")
+
+    return metrics, y_test_pred, y_test_result
+
+
+def main():
+    logger.info("=" * 70)
+    logger.info("Wine Quality Classification - Training")
+    logger.info("=" * 70)
+
+    params = load_params()
+    train_and_evaluate(params)
 
     logger.info("=" * 70)
     logger.info("Training completed!")

@@ -2,6 +2,7 @@
 
 from functools import wraps
 import logging
+from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple
 
 import wandb
@@ -12,7 +13,6 @@ logger = logging.getLogger(__name__)
 def track_experiment(
     project: str = "wine-quality",
     tags: Optional[list] = None,
-    log_confusion_matrix: bool = False,
 ) -> Callable:
     """
     Декоратор для отслеживания экспериментов в W&B.
@@ -20,13 +20,13 @@ def track_experiment(
     Автоматически:
     - Инициализирует W&B run
     - Логирует параметры конфига
-    - Логирует метрики из словаря результатов
+    - Логирует метрики
+    - Логирует модель как артефакт
     - Завершает run
 
     Args:
         project: Название проекта W&B
         tags: Теги для эксперимента
-        log_confusion_matrix: Логировать ли матрицу ошибок
 
     Returns:
         Декоратор функции
@@ -64,6 +64,9 @@ def track_experiment(
                     wandb.log(metrics)  # type: ignore[attr-defined]
                     logger.info(f"Logged metrics: {list(metrics.keys())}")
 
+                    # Логировать модель
+                    _log_model(run_name)
+
                 return result
 
             except Exception as e:
@@ -77,3 +80,24 @@ def track_experiment(
         return wrapper
 
     return decorator
+
+
+def _log_model(run_name: str) -> None:
+    """Логирует модель как артефакт (вспомогательная функция)"""
+    model_path = Path("models/model.jbl")
+
+    if not model_path.exists():
+        logger.warning(f"Model not found: {model_path}")
+        return
+
+    try:
+        artifact = wandb.Artifact(  # type: ignore[attr-defined]
+            name="wine-quality-model",
+            type="model",
+            description=f"Model: {run_name}",
+        )
+        artifact.add_file(str(model_path), name="model.jbl")
+        wandb.log_artifact(artifact)  # type: ignore[attr-defined]
+        logger.info(f"Model logged: {model_path}")
+    except Exception as e:
+        logger.error(f"Failed to log model: {e}")

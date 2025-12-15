@@ -1,0 +1,85 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            bt8pb6ctb6zjsqcmiad42o3pj58b5tcb:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M3
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "3221225472"
+                args:
+                    - --alpha=0.8104906220623802
+                    - --batch_size=64
+                    - --learning_rate=0.001041540804504432
+                    - --max_depth=15
+                    - --min_samples_leaf=4
+                    - --min_samples_split=5
+                    - --model_type=RandomForest
+                    - --n_estimators=100
+                codePath: src/modeling/train.py
+                codePathLocal: src/modeling/train.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "236224200704"
+                email: livshitz.leva@gmail.com
+                executable: /opt/anaconda3/bin/python
+                git:
+                    commit: b9b0f66cd09f3f1e348623cc62dcce2409fcba2c
+                    remote: https://github.com/Levliv/mlops
+                host: Levs-MacBook-Air.local
+                memory:
+                    total: "17179869184"
+                os: macOS-15.6.1-arm64-arm-64bit
+                program: /Users/lev/Documents/ml_practices/wine_quality/src/modeling/train.py
+                python: CPython 3.12.2
+                root: /Users/lev/Documents/ml_practices/wine_quality
+                startedAt: "2025-12-15T13:42:42.613991Z"
+                writerId: bt8pb6ctb6zjsqcmiad42o3pj58b5tcb
+        m: []
+        python_version: 3.12.2
+        t:
+            "1":
+                - 5
+                - 53
+                - 105
+            "2":
+                - 5
+                - 53
+                - 105
+            "3":
+                - 2
+                - 13
+                - 14
+                - 15
+                - 16
+            "4": 3.12.2
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": darwin-arm64
+alpha:
+    value: 0.8104906220623802
+batch_size:
+    value: 64
+learning_rate:
+    value: 0.001041540804504432
+max_depth:
+    value: 15
+min_samples_leaf:
+    value: 4
+min_samples_split:
+    value: 5
+model_type:
+    value: RandomForest
+n_estimators:
+    value: 100
+random_state:
+    value: 42
+test_size:
+    value: 0.2

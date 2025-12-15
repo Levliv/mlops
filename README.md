@@ -173,7 +173,6 @@ poetry install
 wandb login
 <enter API key recieved https://wandb.ai>
 ```
-![dvc_data](img/hw2/dvc_data.png)
 
 #### 2. Проведение экспериментов:
 - Проведено 15+ экспериментов с разными алгоритмами sweepe
@@ -183,13 +182,13 @@ wandb login
 - Настроено логирование метрик, параметров и артефактов
 - Создано система сравнения экспериментов
 - Настроена фильтрация и поиск экспериментов
-![dvc_models](img/hw2/dvc_model.png)
+![model runs](img/hw3/model_runs.png)
 
 #### 3.Интеграция с кодом:
 - Интегрирован выбранный инструмент в Python код
 - Созданы декораторы для автоматического логирования: ![декоратор](src/utils/wandb.py)
 - Настроены ![контекстные менеджеры](src/utils/wandb.py)
 - Cозданы ![утилиты для работы с экспериментами](src/utils/wandb.py)
-![Docker-compose](img/hw2/docker-compose.png)
+![Docker-compose](img/hw3/model_registery.png)
 
 #### 4. Отчет о проделанной работе

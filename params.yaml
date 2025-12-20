@@ -3,14 +3,14 @@ prepare:
   output_file: data/processed/wine_cleaned.csv
 
 train:
-  model_type: RandomForest
-  n_estimators: 10
-  max_depth: 5
-  min_samples_split: 5
-  min_samples_leaf: 2
-  learning_rate: 0.1
-  random_state: 42
+  model:
+    model_type: RandomForest
+    n_estimators: 10
+    max_depth: 5
+    min_samples_split: 5
+    min_samples_leaf: 2
   test_size: 0.2
+  random_state: 42
 
 evaluate:
   metrics:

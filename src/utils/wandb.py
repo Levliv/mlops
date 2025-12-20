@@ -3,8 +3,9 @@
 from functools import wraps
 import logging
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Optional, Tuple
 
+from src.config.schemas import Config
 import wandb
 
 logger = logging.getLogger(__name__)
@@ -35,12 +36,12 @@ def track_experiment(
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(
-            config: Dict[str, Any], *args: Any, **kwargs: Any
-        ) -> Tuple[Dict[str, float], Any, Any]:
-            # Подготовить данные для W&B
-            model_type = config.get("train", {}).get("model_type", "Unknown")
-            n_estimators = config.get("train", {}).get("n_estimators", 100)
-            max_depth = config.get("train", {}).get("max_depth", 10)
+            config: Config, *args: Any, **kwargs: Any  # ← Тип изменен на Config
+        ) -> Tuple[dict[str, float], Any, Any]:
+            # Подготовить данные для W&B из Pydantic модели
+            model_type = config.train.model.model_type
+            n_estimators = config.train.model.n_estimators
+            max_depth = config.train.model.max_depth
 
             run_name = f"{model_type}_e{n_estimators}_d{max_depth}"
 
@@ -48,7 +49,7 @@ def track_experiment(
             run = wandb.init(  # type: ignore[attr-defined]
                 project=project,
                 name=run_name,
-                config=config.get("train", {}),
+                config=config.train.model.model_dump(),  # ← Используем model_dump()
                 tags=tags or [model_type, "classification"],
             )
 

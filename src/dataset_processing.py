@@ -2,15 +2,32 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+import yaml
+
+from src.config.schemas import Config
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
+def load_config():
+    """Загрузка конфигурации с валидацией"""
+    with open("params.yaml") as f:
+        data = yaml.safe_load(f)
+    return Config(**data)
+
+
 def prepare_data():
     """Подготовка данных согласно DVC pipeline"""
-    logger.info("Loading raw data...")
-    df_raw = pd.read_csv("data/raw/wineQT.csv")
+    # Загружаем конфиг
+    config = load_config()
+
+    # Используем пути из конфига
+    input_file = config.prepare.input_file
+    output_file = config.prepare.output_file
+
+    logger.info(f"Loading raw data from {input_file}...")
+    df_raw = pd.read_csv(input_file)
     logger.info(f"Initial size: {len(df_raw)} rows, {len(df_raw.columns)} columns")
     logger.info(f"Columns: {list(df_raw.columns)}")
 
@@ -40,9 +57,9 @@ def prepare_data():
         f"Min: {df_processed['quality'].min()}, Max: {df_processed['quality'].max()}, Mean: {df_processed['quality'].mean():.2f}"
     )
 
-    logger.info("Saving processed data...")
-    Path("data/processed").mkdir(parents=True, exist_ok=True)
-    df_processed.to_csv("data/processed/wine_cleaned.csv", index=False)
+    logger.info(f"Saving processed data to {output_file}...")
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    df_processed.to_csv(output_file, index=False)
 
     logger.info(
         f"Done! Samples: {len(df_processed)}, Features: {len(df_processed.columns) - 1}, Classes: {df_processed['quality'].nunique()}"

@@ -18,6 +18,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import yaml
 
+from src.config.schemas import Config
+
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(project_root))
 
@@ -29,7 +31,8 @@ logger = logging.getLogger(__name__)
 
 def load_params():
     with open("params.yaml") as f:
-        return yaml.safe_load(f)
+        data = yaml.safe_load(f)
+    return Config(**data)
 
 
 def parse_args():
@@ -46,26 +49,35 @@ def parse_args():
     return parser.parse_args()
 
 
-def merge_params(params, args):
-    """Объединяем параметры: аргументы командной строки переопределяют файл"""
+def merge_params(config: Config, args):
+    # Собираем обновления в словарь
+    train_updates = {}
     if args.learning_rate is not None:
-        params["train"]["learning_rate"] = args.learning_rate
-    if args.batch_size is not None:
-        params["train"]["batch_size"] = args.batch_size
-    if args.alpha is not None:
-        params["train"]["alpha"] = args.alpha
+        train_updates["learning_rate"] = args.learning_rate
     if args.n_estimators is not None:
-        params["train"]["n_estimators"] = args.n_estimators
+        train_updates["n_estimators"] = args.n_estimators
     if args.max_depth is not None:
-        params["train"]["max_depth"] = args.max_depth
+        train_updates["max_depth"] = args.max_depth
     if args.min_samples_split is not None:
-        params["train"]["min_samples_split"] = args.min_samples_split
+        train_updates["min_samples_split"] = args.min_samples_split
     if args.min_samples_leaf is not None:
-        params["train"]["min_samples_leaf"] = args.min_samples_leaf
+        train_updates["min_samples_leaf"] = args.min_samples_leaf
+    if args.batch_size is not None:
+        train_updates["batch_size"] = args.batch_size
+    if args.alpha is not None:
+        train_updates["alpha"] = args.alpha
     if args.model_type is not None:
-        params["train"]["model_type"] = args.model_type
+        train_updates["model_type"] = args.model_type
 
-    return params
+    # Обновляем train config (с валидацией!)
+    new_train = config.train.model_copy(update=train_updates)
+
+    # Возвращаем новый Config со всеми секциями!
+    return Config(
+        prepare=config.prepare,
+        train=new_train,
+        evaluate=config.evaluate  # ← Добавь это!
+    )
 
 
 def load_data():
@@ -92,10 +104,10 @@ def prepare_features(df):
     return X, y
 
 
-def split_data(X, y, params):
+def split_data(X, y, config: Config):
     logger.info("Splitting data...")
-    test_size = params["train"].get("test_size", 0.2)
-    random_state = params["train"].get("random_state", 42)
+    test_size = config.train.model.test_size
+    random_state = config.train.model.random_state
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=random_state, stratify=y
@@ -115,18 +127,18 @@ def scale_features(X_train, X_test):
     return X_train_scaled, X_test_scaled, scaler
 
 
-def train_model(X_train, y_train, params):
+def train_model(X_train, y_train, config: Config):
     logger.info("Training model...")
-    train_params = params["train"]
-    model_type = train_params.get("model_type", "RandomForest")
+    train_params = config.train.model
+    model_type = train_params.model_type
 
     if model_type == "RandomForest":
         model = RandomForestClassifier(
-            n_estimators=train_params.get("n_estimators", 100),
-            max_depth=train_params.get("max_depth", 10),
-            min_samples_split=train_params.get("min_samples_split", 5),
-            min_samples_leaf=train_params.get("min_samples_leaf", 2),
-            random_state=train_params.get("random_state", 42),
+            n_estimators=train_params.n_estimators,
+            max_depth=train_params.max_depth,
+            min_samples_split=train_params.min_samples_split,
+            min_samples_leaf=train_params.min_samples_leaf,
+            random_state=train_params.random_state,
             n_jobs=-1,
             verbose=0,
         )
@@ -198,16 +210,16 @@ def save_metrics(metrics, filepath):
 
 
 @track_experiment(project="wine-quality", tags=["dvc-pipeline"])
-def train_and_evaluate(params):
+def train_and_evaluate(config: Config):
     """Обучение и оценка модели с логированием в W&B"""
     df = load_data()
     X, y = prepare_features(df)
-    X_train, X_test, y_train, y_test = split_data(X, y, params)
+    X_train, X_test, y_train, y_test = split_data(X, y, config)
     X_train_scaled, X_test_scaled, scaler = scale_features(X_train, X_test)
 
     save_scaler(scaler, "models/scaler.jbl")
 
-    model = train_model(X_train_scaled, y_train, params)
+    model = train_model(X_train_scaled, y_train, config)
     metrics, y_test_pred, y_test_result = evaluate_model(
         model, X_train_scaled, X_test_scaled, y_train, y_test
     )
@@ -224,18 +236,18 @@ def main():
     logger.info("=" * 70)
 
     # Загружаем параметры из файла
-    params = load_params()
+    config = load_params()
 
     # Парсим аргументы командной строки
     args = parse_args()
 
     # Объединяем: аргументы переопределяют файл
-    params = merge_params(params, args)
+    config = merge_params(config, args)
 
     # Логируем какие параметры используем
-    logger.info(f"Parameters: {params['train']}")
+    logger.info(f"Parameters: {config.train.model_dump()}")
 
-    train_and_evaluate(params)
+    train_and_evaluate(config)
 
     logger.info("=" * 70)
     logger.info("Training completed!")

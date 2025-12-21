@@ -256,7 +256,7 @@ wandb login
 
 #### 4. Пайплайны
 - Создан ClearML пайплайны для ML workflow ![clearml_pipeline](img/hw5/clearml_pipeline.png)
-- Настроен автоматический запуск пайплайнов
+- Настроен автоматический запуск пайплайнов [schedule_pipeline](src/schedule_pipeline.py)
 - Создана систему мониторинга выполнения
 - Настроены уведомления
 

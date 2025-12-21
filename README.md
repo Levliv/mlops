@@ -223,7 +223,7 @@ wandb login
 
 
 --------
-## ДЗ4
+## ДЗ5
 ### Отчет о ClearML для MLOps
 #### 1. Настройка ClearML:
 - Установлен и настроен ClearML Server

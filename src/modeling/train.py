@@ -19,6 +19,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import yaml
 
+from reports.compare_experiments import compare_experiments
+from reports.generate_report import generate_experiment_report
 from src.config.schemas import Config
 
 project_root = Path(__file__).resolve().parent.parent.parent
@@ -298,3 +300,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    generate_experiment_report()
+    compare_experiments()

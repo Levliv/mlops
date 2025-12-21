@@ -1,0 +1,25 @@
+site_name: Wine Quality ML Project
+site_description: ML pipeline for wine quality prediction
+theme:
+  name: material
+  palette:
+    primary: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+
+nav:
+  - Главная: index.md
+  - Быстрый старт: quickstart.md
+  - Руководства:
+      - Установка: guides/installation.md
+      - Обучение модели: guides/training.md
+  - Эксперименты: experiments/experiments.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true

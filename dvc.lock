@@ -9,8 +9,8 @@ stages:
       size: 78057
     - path: src/dataset_processing.py
       hash: md5
-      md5: 198b8418e8369df5dc0beb035ce8ab40
-      size: 1783
+      md5: 552fe5be32ef8a9395fd96faa304b12d
+      size: 2341
     params:
       params.yaml:
         prepare:
@@ -30,31 +30,31 @@ stages:
       size: 59583
     - path: src/modeling/train.py
       hash: md5
-      md5: 5a0422fd74ae79618e8e7cc89866ab8b
-      size: 8415
+      md5: b867c488a9ee86000e59f40f4b9c68e9
+      size: 10460
     params:
       params.yaml:
         train:
-          model_type: RandomForest
-          n_estimators: 10
-          max_depth: 5
-          min_samples_split: 5
-          min_samples_leaf: 2
-          learning_rate: 0.1
-          random_state: 42
+          model:
+            model_type: RandomForest
+            n_estimators: 40
+            max_depth: 10
+            min_samples_split: 5
+            min_samples_leaf: 3
           test_size: 0.2
+          random_state: 42
     outs:
     - path: metrics/train_metrics.json
       hash: md5
-      md5: 3087d13115243c8c87e0b67eeedd9f68
-      size: 220
+      md5: 02d429c39dd260b519fc1739cc849ab3
+      size: 221
     - path: models/model.jbl
       hash: md5
-      md5: 1001dafc7142f3e71baabe14147c0479
-      size: 62697
+      md5: e3d9cd19e1a560623ddd20503dfeff97
+      size: 879593
     - path: models/scaler.jbl
       hash: md5
-      md5: 54353a6ac0e3925d4a84a5ea5c865ae8
+      md5: 10b5abf58ee36b3d1a28725f91490a3e
       size: 1279
   evaluate_model:
     cmd: python src/modeling/predict.py
@@ -65,22 +65,22 @@ stages:
       size: 59583
     - path: models/model.jbl
       hash: md5
-      md5: 1001dafc7142f3e71baabe14147c0479
-      size: 62697
+      md5: e3d9cd19e1a560623ddd20503dfeff97
+      size: 879593
     - path: models/scaler.jbl
       hash: md5
-      md5: 54353a6ac0e3925d4a84a5ea5c865ae8
+      md5: 10b5abf58ee36b3d1a28725f91490a3e
       size: 1279
     - path: src/modeling/predict.py
       hash: md5
-      md5: cae6e360c98318198c34f681bd810faa
-      size: 4230
+      md5: db722d3a1418edf35e73ffdc56a398a7
+      size: 4541
     outs:
     - path: metrics/eval_metrics.json
       hash: md5
-      md5: ec328a8a0a70d8b1e807a2fa96f5e66b
+      md5: d47bc21c5bf68c01f72f8913dbab911a
       size: 158
     - path: metrics/predictions.csv
       hash: md5
-      md5: 608e9544b4c2c08484fe65ebb3030896
-      size: 122327
+      md5: f5e5711996901f54079a3af7f21bf227
+      size: 109697

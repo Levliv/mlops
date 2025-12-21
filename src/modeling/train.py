@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 import sys
 
+from clearml import Task
 import joblib
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
@@ -224,7 +225,45 @@ def train_and_evaluate(config: Config):
         model, X_train_scaled, X_test_scaled, y_train, y_test
     )
 
+    logger = Task.current_task().get_logger()
+    logger.report_scalar(title="Accuracy", series="train", value=metrics["train_accuracy"], iteration=0)
+    logger.report_scalar(title="Accuracy", series="test", value=metrics["test_accuracy"], iteration=0)
+    logger.report_scalar(title="F1 Score", series="test", value=metrics["test_f1_macro"], iteration=0)
+
     save_model(model, "models/model.jbl")
+
+    Task.current_task().upload_artifact(
+        name="model",
+        artifact_object=model,
+        metadata={
+            # Информация о модели
+            "model_type": config.train.model.model_type,
+            "framework": "scikit-learn",
+            "algorithm": "RandomForest",
+
+            # Метрики
+            "test_accuracy": metrics["test_accuracy"],
+            "test_f1": metrics["test_f1_macro"],
+            "train_accuracy": metrics["train_accuracy"],
+
+            # Гиперпараметры
+            "n_estimators": config.train.model.n_estimators,
+            "max_depth": config.train.model.max_depth,
+
+            # Данные
+            "dataset_size": len(X_train) + len(X_test),
+            "train_size": len(X_train),
+            "test_size": len(X_test),
+            "features": X.shape[1],
+            "classes": len(y.unique()),
+
+            # Версионирование
+            "version": "v1.0",
+            "created_by": "Lev L",
+            "purpose": "wine quality classification"
+        }
+    )
+
     save_metrics(metrics, "metrics/train_metrics.json")
 
     return metrics, y_test_pred, y_test_result
@@ -237,6 +276,9 @@ def main():
 
     # Загружаем параметры из файла
     config = load_params()
+
+    task = Task.init(project_name="wine-quality", task_name="training-experiment")
+    task.connect(config.train.model_dump())
 
     # Парсим аргументы командной строки
     args = parse_args()

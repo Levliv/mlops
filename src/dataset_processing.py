@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+from clearml import Task
 import pandas as pd
 import yaml
 
@@ -19,6 +20,8 @@ def load_config():
 
 def prepare_data():
     """Подготовка данных согласно DVC pipeline"""
+    Task.init(project_name="wine-quality", task_name="data-preparation")
+
     # Загружаем конфиг
     config = load_config()
 

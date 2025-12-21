@@ -2,6 +2,7 @@ import json
 import logging
 from pathlib import Path
 
+from clearml import Task
 import joblib
 import pandas as pd
 from sklearn.metrics import (
@@ -131,6 +132,8 @@ def main():
     logger.info("Wine Quality Classification - Evaluation")
     logger.info("=" * 70)
 
+    task = Task.init(project_name="wine-quality", task_name="model-evaluation")
+
     model = load_model("models/model.jbl")
     scaler = load_scaler("models/scaler.jbl")
     df = load_data()
@@ -142,6 +145,9 @@ def main():
     save_metrics(metrics, "metrics/eval_metrics.json")
     save_predictions(y_pred, y, y_proba, "metrics/predictions.csv")
     save_confusion_matrix(cm, y, "metrics/confusion_matrix.csv")
+
+    task.get_logger().report_scalar("Accuracy", "evaluation", value=metrics["accuracy"], iteration=0)
+    task.get_logger().report_scalar("F1 Score", "evaluation", value=metrics["f1_macro"], iteration=0)
 
     logger.info("=" * 70)
     logger.info("Evaluation completed!")

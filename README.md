@@ -14,6 +14,7 @@ project to asses wine quality
   - [3.2 ДЗ 2](#ДЗ2)
   - [3.3 ДЗ 3](#ДЗ3)
   - [3.4 ДЗ 4](#ДЗ4)
+  - [3.5 ДЗ 5](#ДЗ5)
 - [4. Примеры](#примеры)
 ## Project Organization
 
@@ -219,3 +220,44 @@ wandb login
 - Протестирована воспроизводимость
 
 #### 4. Отчет о проделанной работе
+
+
+--------
+## ДЗ5
+### Отчет о ClearML для MLOps
+#### 1. Настройка ClearML:
+- Установлен и настроен ClearML Server
+  - Склонирован репозиторий ```git clone https://github.com/clearml/clearml-server.git```
+  - Поднят docker образ ```docker-compose up```
+- Настроена база данных и хранилище
+  - подняты 6 сервисов clearml-mongo (MongoDB), clearml-elastic (Elasticsearch), clearml-redis (Redis), clearml-server (API Server, порт 8008), clearml-fileserver (File Server, порт 8081), clearml-webserver (Web UI, порт 8080)
+  - MongoDB для хранения метаданных экспериментов и моделей
+  - Elasticsearch для поиска и индексации
+  - Redis для кэширования и очередей задач
+  - File Storage через clearml-fileserver для хранения артефактов и моделей
+![clearml_docker](img/hw5/clearml_docker.png)
+- Созданы проекты и эксперименты
+![clearml_project](img/hw5/clearml_projects.png)
+- Настроена аутентификация
+```clearml-init```
+![clearml_setup](img/hw5/clearml_setup.png)
+
+#### 2. Трекинг экспериментов:
+- Настроено автоматическое логирование ![clearml_tracking](img/hw5/clearml_exp.png)
+- Создана систему сравнения экспериментов ![clearml_comp](img/hw5/clearml_comp.png)
+- Настроено логирование метрик и параметров ![clearml_params](img/hw5/params.png)
+- Созданы дашборды для анализа
+
+#### 3.Управление моделями:
+- Настроена регистрация и версионирование моделей ![model versioning](img/hw5/model_reg.png)
+- Создана систему метаданных для моделей ![model_metadata](img/hw5/model_metadata.png)
+- Настроено автоматическое создание версий: каждый запуск создает новую версию ![versions](img/hw5/versions.png)
+- Создана систему сравнения моделей
+
+#### 4. Пайплайны
+- Создан ClearML пайплайны для ML workflow ![clearml_pipeline](img/hw5/clearml_pipeline.png)
+- Настроен автоматический запуск пайплайнов [schedule_pipeline](src/schedule_pipeline.py)
+- Создана систему мониторинга выполнения
+- Настроены уведомления
+
+#### 5. Отчет о проделанной работе

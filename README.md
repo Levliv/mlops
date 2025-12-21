@@ -281,6 +281,7 @@ mkdocs serve
 - Настроены [GitHub Actions](.github/workflows/docs.yml) для автоматической публикации
 ![workflow](img/hw6/wf.png)
 - Создан сайт с документацией на [Git Pages](https://levliv.github.io/mlops/)
+![gh pages](img/hw6/gh_pages.png)
 - Настроено автоматическое обновление при изменениях
 
 #### 3.Отчеты об экспериментах:
@@ -294,3 +295,4 @@ mkdocs serve
 - Создана инструкция по воспроизведению.
 - Создан README с полным описанием
 - Настроена автоматическая сборка документации
+![gh_info](img/hw6/gh_info.png)

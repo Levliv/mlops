@@ -14,9 +14,6 @@ nav:
   - Руководства:
       - Установка: guides/installation.md
       - Обучение модели: guides/training.md
-      - Запуск пайплайна: guides/pipeline.md
-  - API Reference:
-      - Модули: api/modules.md
   - Эксперименты: experiments/experiments.md
 
 plugins:

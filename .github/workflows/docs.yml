@@ -10,6 +10,9 @@ on:
       - 'mkdocs.yml'
       - '.github/workflows/docs.yml'
 
+permissions:
+  contents: write  # Добавлено для push в gh-pages
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

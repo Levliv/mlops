@@ -1,0 +1,8 @@
+wandb_version: 1
+
+alpha:
+  value: 0.7243158757436559
+batch_size:
+  value: 16
+learning_rate:
+  value: 0.0005925725636954177

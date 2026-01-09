@@ -1,6 +1,8 @@
+import argparse
 import json
 import logging
 from pathlib import Path
+import sys
 
 import joblib
 import pandas as pd
@@ -8,7 +10,6 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
-    confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
@@ -17,6 +18,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import yaml
 
+project_root = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from src.utils.wandb import track_experiment
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
@@ -24,6 +30,42 @@ logger = logging.getLogger(__name__)
 def load_params():
     with open("params.yaml") as f:
         return yaml.safe_load(f)
+
+
+def parse_args():
+    """Парсим аргументы из командной строки"""
+    parser = argparse.ArgumentParser(description="Train wine quality model")
+    parser.add_argument("--learning_rate", type=float, default=None)
+    parser.add_argument("--batch_size", type=int, default=None)
+    parser.add_argument("--alpha", type=float, default=None)
+    parser.add_argument("--n_estimators", type=int, default=None)
+    parser.add_argument("--max_depth", type=int, default=None)
+    parser.add_argument("--min_samples_split", type=int, default=None)
+    parser.add_argument("--min_samples_leaf", type=int, default=None)
+    parser.add_argument("--model_type", type=str, default=None)
+    return parser.parse_args()
+
+
+def merge_params(params, args):
+    """Объединяем параметры: аргументы командной строки переопределяют файл"""
+    if args.learning_rate is not None:
+        params["train"]["learning_rate"] = args.learning_rate
+    if args.batch_size is not None:
+        params["train"]["batch_size"] = args.batch_size
+    if args.alpha is not None:
+        params["train"]["alpha"] = args.alpha
+    if args.n_estimators is not None:
+        params["train"]["n_estimators"] = args.n_estimators
+    if args.max_depth is not None:
+        params["train"]["max_depth"] = args.max_depth
+    if args.min_samples_split is not None:
+        params["train"]["min_samples_split"] = args.min_samples_split
+    if args.min_samples_leaf is not None:
+        params["train"]["min_samples_leaf"] = args.min_samples_leaf
+    if args.model_type is not None:
+        params["train"]["model_type"] = args.model_type
+
+    return params
 
 
 def load_data():
@@ -133,11 +175,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test):
     logger.info("Classification Report (Test Set):")
     logger.info(classification_report(y_test, y_test_pred))
 
-    cm = confusion_matrix(y_test, y_test_pred)
-    logger.info("Confusion Matrix (Test Set):")
-    logger.info(cm)
-
-    return metrics, y_test_pred, cm
+    return metrics, y_test_pred, y_test
 
 
 def save_model(model, filepath):
@@ -159,19 +197,9 @@ def save_metrics(metrics, filepath):
         json.dump(metrics, f, indent=4)
 
 
-def save_confusion_matrix(cm, filepath):
-    logger.info("Saving confusion matrix...")
-    Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-    df_cm = pd.DataFrame(cm)
-    df_cm.to_csv(filepath, index=False)
-
-
-def main():
-    logger.info("=" * 70)
-    logger.info("Wine Quality Classification - Training")
-    logger.info("=" * 70)
-
-    params = load_params()
+@track_experiment(project="wine-quality", tags=["dvc-pipeline"])
+def train_and_evaluate(params):
+    """Обучение и оценка модели с логированием в W&B"""
     df = load_data()
     X, y = prepare_features(df)
     X_train, X_test, y_train, y_test = split_data(X, y, params)
@@ -180,13 +208,34 @@ def main():
     save_scaler(scaler, "models/scaler.jbl")
 
     model = train_model(X_train_scaled, y_train, params)
-    metrics, y_test_pred, cm = evaluate_model(
+    metrics, y_test_pred, y_test_result = evaluate_model(
         model, X_train_scaled, X_test_scaled, y_train, y_test
     )
 
     save_model(model, "models/model.jbl")
     save_metrics(metrics, "metrics/train_metrics.json")
-    save_confusion_matrix(cm, "metrics/confusion_matrix.csv")
+
+    return metrics, y_test_pred, y_test_result
+
+
+def main():
+    logger.info("=" * 70)
+    logger.info("Wine Quality Classification - Training")
+    logger.info("=" * 70)
+
+    # Загружаем параметры из файла
+    params = load_params()
+
+    # Парсим аргументы командной строки
+    args = parse_args()
+
+    # Объединяем: аргументы переопределяют файл
+    params = merge_params(params, args)
+
+    # Логируем какие параметры используем
+    logger.info(f"Parameters: {params['train']}")
+
+    train_and_evaluate(params)
 
     logger.info("=" * 70)
     logger.info("Training completed!")

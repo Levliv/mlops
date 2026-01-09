@@ -30,14 +30,14 @@ stages:
       size: 59583
     - path: src/modeling/train.py
       hash: md5
-      md5: d3fe07e92f0afa6b7a64bdbe6db82f42
-      size: 6270
+      md5: fb08384571bd698531aaca31a818350f
+      size: 6305
     params:
       params.yaml:
         train:
           model_type: RandomForest
-          n_estimators: 100
-          max_depth: 10
+          n_estimators: 10
+          max_depth: 5
           min_samples_split: 5
           min_samples_leaf: 2
           learning_rate: 0.1
@@ -46,12 +46,12 @@ stages:
     outs:
     - path: metrics/train_metrics.json
       hash: md5
-      md5: 847cc69f34c556bb2c9feb450c181c06
+      md5: 3087d13115243c8c87e0b67eeedd9f68
       size: 220
     - path: models/model.jbl
       hash: md5
-      md5: f8448ca2e880b08c399fac17345a8d62
-      size: 2363977
+      md5: 1001dafc7142f3e71baabe14147c0479
+      size: 62697
     - path: models/scaler.jbl
       hash: md5
       md5: 54353a6ac0e3925d4a84a5ea5c865ae8
@@ -65,8 +65,8 @@ stages:
       size: 59583
     - path: models/model.jbl
       hash: md5
-      md5: f8448ca2e880b08c399fac17345a8d62
-      size: 2363977
+      md5: 1001dafc7142f3e71baabe14147c0479
+      size: 62697
     - path: models/scaler.jbl
       hash: md5
       md5: 54353a6ac0e3925d4a84a5ea5c865ae8
@@ -78,9 +78,9 @@ stages:
     outs:
     - path: metrics/eval_metrics.json
       hash: md5
-      md5: 2c1ff532b7a158fb711df1ce3a7652b6
+      md5: ec328a8a0a70d8b1e807a2fa96f5e66b
       size: 158
     - path: metrics/predictions.csv
       hash: md5
-      md5: dea4d84a8f7210090deb5d5b2e7ce43b
-      size: 118205
+      md5: 608e9544b4c2c08484fe65ebb3030896
+      size: 122327

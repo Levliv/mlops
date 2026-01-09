@@ -1,0 +1,18 @@
+wandb_version: 1
+
+alpha:
+  value: 0.8327613759862947
+batch_size:
+  value: 32
+learning_rate:
+  value: 0.003212844177609613
+max_depth:
+  value: 15
+min_samples_leaf:
+  value: 2
+min_samples_split:
+  value: 10
+model_type:
+  value: RandomForest
+n_estimators:
+  value: 100

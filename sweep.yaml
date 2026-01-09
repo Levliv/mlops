@@ -1,0 +1,26 @@
+program: src/modeling/train.py
+method: bayes
+project: wine-quality
+metric:
+  name: test_accuracy
+  goal: maximize
+parameters:
+  learning_rate:
+    distribution: log_uniform_values
+    min: 0.00001
+    max: 0.1
+  batch_size:
+    values: [16, 32, 64]
+  alpha:
+    min: 0.0
+    max: 1.0
+  n_estimators:
+    values: [50, 100, 200]
+  max_depth:
+    values: [5, 10, 15, 20]
+  min_samples_split:
+    values: [2, 5, 10]
+  min_samples_leaf:
+    values: [1, 2, 4]
+  model_type:
+    values: ["RandomForest", "GradientBoosting"]
